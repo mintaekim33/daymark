@@ -19,7 +19,7 @@ app.add_middleware(
 
 @app.get("/")
 def root():
-    return {g of this run can be found in
+    return {
         "message": "Welcome to Daymark API",
         "status": "running",
     }
