@@ -1,22 +1,22 @@
 
+import type { ReactNode } from "react";
+
 import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/Header";
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      {/* Sidebar */}
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       <Sidebar />
 
-      {/* Main workspace */}
       <div className="flex min-w-0 flex-1 flex-col">
         <Header />
 
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
           {children}
         </main>
       </div>

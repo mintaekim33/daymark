@@ -1,59 +1,232 @@
-import { useEffect, useState } from "react";
 
-interface HealthResponse {
-  status: string;
-  application: string;
-}
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router";
 
-function App() {
-  const [apiStatus, setApiStatus] = useState("Checking...");
+import MainLayout from "./layouts/MainLayout";
 
-  useEffect(() => {
-    fetch("/api/health")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("API request failed");
-        }
-        return response.json();
-      })
-      .then((data: HealthResponse) => {
-        setApiStatus(data.status);
-      })
-      .catch(() => {
-        setApiStatus("Disconnected");
-      });
-  }, []);
+// Temporary dashboard data
+const stats = [
+  {
+    label: "Tasks completed",
+    value: "6 / 10",
+    detail: "4 tasks remaining",
+  },
+  {
+    label: "Active projects",
+    value: "4",
+    detail: "Across your workspace",
+  },
+  {
+    label: "Upcoming deadlines",
+    value: "2",
+    detail: "Due this week",
+  },
+];
 
+const tasks = [
+  {
+    id: 1,
+    title: "Finish Daymark application shell",
+    project: "Daymark",
+    priority: "High",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Review project milestones",
+    project: "Portfolio",
+    priority: "Medium",
+    completed: false,
+  },
+  {
+    id: 3,
+    title: "Study React Router",
+    project: "Learning",
+    priority: "Low",
+    completed: true,
+  },
+];
+
+function DashboardPage() {
   return (
-    <main className="min-h-screen p-8">
-      <header className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-slate-800">
-          Daymark
-        </h1>
+    <div className="mx-auto max-w-7xl space-y-8">
 
-        <span className="text-sm text-slate-500">
-          Your personal command center
-        </span>
-      </header>
+      {/* Welcome section */}
+      <section>
+        <p className="text-sm font-medium text-indigo-600">
+          YOUR WORKSPACE
+        </p>
 
-      <section className="mt-16">
-        <h2 className="text-2xl font-semibold">
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
           Make today count.
-        </h2>
+        </h1>
 
         <p className="mt-2 text-slate-500">
           Organize your goals, projects and daily tasks.
         </p>
+      </section>
 
-        <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="font-semibold">Backend connection</h3>
+      {/* Statistics */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
+            <p className="text-sm font-medium text-slate-500">
+              {stat.label}
+            </p>
 
-          <p className="mt-2 text-sm text-slate-600">
-            API status: {apiStatus}
+            <p className="mt-3 text-3xl font-bold text-slate-900">
+              {stat.value}
+            </p>
+
+            <p className="mt-2 text-xs text-slate-400">
+              {stat.detail}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* Tasks and focus */}
+      <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+        {/* Task list */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Today's tasks
+            </h2>
+
+            <span className="text-sm text-indigo-600">
+              {tasks.length} tasks
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            {tasks.map((task) => (
+              <div
+                key={task.id}
+                className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <div
+                    className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                      task.completed
+                        ? "border-indigo-600 bg-indigo-600"
+                        : "border-slate-300"
+                    }`}
+                  />
+
+                  <div className="min-w-0">
+                    <p
+                      className={`truncate text-sm font-medium ${
+                        task.completed
+                          ? "text-slate-400 line-through"
+                          : "text-slate-800"
+                      }`}
+                    >
+                      {task.title}
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      {task.project}
+                    </p>
+                  </div>
+                </div>
+
+                <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                  {task.priority}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Focus card */}
+        <div className="rounded-xl bg-indigo-600 p-6 text-white shadow-sm">
+          <p className="text-sm font-medium text-indigo-200">
+            DAILY FOCUS
           </p>
+
+          <h2 className="mt-4 text-xl font-bold">
+            One step at a time.
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-indigo-100">
+            Consistent progress beats trying to do everything at once.
+            Focus on completing your most important task today.
+          </p>
+
+          <div className="mt-8 rounded-lg bg-white/10 p-4">
+            <p className="text-sm font-medium">
+              Your next milestone
+            </p>
+
+            <p className="mt-2 text-sm text-indigo-100">
+              Complete the Daymark frontend shell.
+            </p>
+          </div>
         </div>
       </section>
-    </main>
+    </div>
+  );
+}
+
+// Temporary pages until we implement their real functionality
+interface PlaceholderPageProps {
+  title: string;
+}
+
+function PlaceholderPage({ title }: PlaceholderPageProps) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-8">
+      <h1 className="text-2xl font-bold text-slate-900">
+        {title}
+      </h1>
+
+      <p className="mt-3 text-slate-500">
+        This section is under development.
+      </p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+
+          <Route
+            path="/goals"
+            element={<PlaceholderPage title="Goals" />}
+          />
+
+          <Route
+            path="/projects"
+            element={<PlaceholderPage title="Projects" />}
+          />
+
+          <Route
+            path="/tasks"
+            element={<PlaceholderPage title="My Tasks" />}
+          />
+
+          <Route
+            path="/calendar"
+            element={<PlaceholderPage title="Calendar" />}
+          />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </MainLayout>
+    </BrowserRouter>
   );
 }
 
