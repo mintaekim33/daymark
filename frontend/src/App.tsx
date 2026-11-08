@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -52,6 +53,17 @@ const tasks = [
 ];
 
 function DashboardPage() {
+  const [dashboardTasks, setDashboardTasks] = useState(tasks);
+  const toggleTask = (taskId: number) => {
+  setDashboardTasks((currentTasks) =>
+    currentTasks.map((task) =>
+      task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task
+    )
+  );
+};
+  
   return (
     <div className="mx-auto max-w-7xl space-y-8">
 
@@ -103,24 +115,36 @@ function DashboardPage() {
             </h2>
 
             <span className="text-sm text-indigo-600">
-              {tasks.length} tasks
+              {dashboardTasks.filter((task) => !task.completed).length} remaining
             </span>
           </div>
 
           <div className="space-y-4">
-            {tasks.map((task) => (
+            {dashboardTasks.map((task) => (
               <div
                 key={task.id}
                 className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div
-                    className={`h-5 w-5 shrink-0 rounded-full border-2 ${
-                      task.completed
-                        ? "border-indigo-600 bg-indigo-600"
-                        : "border-slate-300"
-                    }`}
-                  />
+                  <button
+  type="button"
+  aria-label={
+    task.completed
+      ? `Mark ${task.title} as incomplete`
+      : `Mark ${task.title} as complete`
+  }
+  aria-pressed={task.completed}
+  onClick={() => toggleTask(task.id)}
+  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+    task.completed
+      ? "border-indigo-600 bg-indigo-600 text-white"
+      : "border-slate-300 hover:border-indigo-500"
+  }`}
+>
+  {task.completed && (
+    <span className="text-xs">✓</span>
+  )}
+</button>
 
                   <div className="min-w-0">
                     <p
