@@ -50,6 +50,9 @@ function DashboardPage() {
   const [dashboardTasks, setDashboardTasks] = useState(tasks);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("Medium");
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedPriority, setEditedPriority] = useState("Medium");
 
   const toggleTask = (taskId: number) => {
     setDashboardTasks((currentTasks) =>
@@ -63,6 +66,40 @@ function DashboardPage() {
     setDashboardTasks((currentTasks) =>
       currentTasks.filter((task) => task.id !== taskId),
     );
+  };
+
+  const startEditing = (taskId: number) => {
+    const taskToEdit = dashboardTasks.find((task) => task.id === taskId);
+
+    if (!taskToEdit) return;
+
+    setEditingTaskId(taskToEdit.id);
+    setEditedTitle(taskToEdit.title);
+    setEditedPriority(taskToEdit.priority);
+  };
+
+  const saveTask = () => {
+    const trimmedTitle = editedTitle.trim();
+
+    if (!trimmedTitle) return;
+
+    setDashboardTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === editingTaskId
+          ? {
+              ...task,
+              title: trimmedTitle,
+              priority: editedPriority,
+            }
+          : task,
+      ),
+    );
+
+    setEditingTaskId(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingTaskId(null);
   };
 
   const addTask = (event: FormEvent<HTMLFormElement>) => {
@@ -192,20 +229,49 @@ function DashboardPage() {
                     {task.completed && <span className="text-xs">✓</span>}
                   </button>
 
-                  <div className="min-w-0">
-                    <p
-                      className={`truncate text-sm font-medium ${
-                        task.completed
-                          ? "text-slate-400 line-through"
-                          : "text-slate-800"
-                      }`}
-                    >
-                      {task.title}
-                    </p>
+                  <div className="min-w-0 flex-1">
+                    {editingTaskId === task.id ? (
+                      <div className="space-y-2">
+                        {/* Editable task title */}
+                        <input
+                          type="text"
+                          value={editedTitle}
+                          onChange={(event) =>
+                            setEditedTitle(event.target.value)
+                          }
+                          className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm outline-none focus:border-indigo-500"
+                        />
 
-                    <p className="mt-1 text-xs text-slate-400">
-                      {task.project}
-                    </p>
+                        {/* Editable priority */}
+                        <select
+                          value={editedPriority}
+                          onChange={(event) =>
+                            setEditedPriority(event.target.value)
+                          }
+                          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs"
+                        >
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <>
+                        <p
+                          className={`truncate text-sm font-medium ${
+                            task.completed
+                              ? "text-slate-400 line-through"
+                              : "text-slate-800"
+                          }`}
+                        >
+                          {task.title}
+                        </p>
+
+                        <p className="mt-1 text-xs text-slate-400">
+                          {task.project}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -214,6 +280,33 @@ function DashboardPage() {
                     {task.priority}
                   </span>
 
+                  {editingTaskId === task.id ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={saveTask}
+                        className="text-xs text-green-600 hover:text-green-700"
+                      >
+                        Save
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={cancelEditing}
+                        className="text-xs text-slate-400 hover:text-slate-600"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => startEditing(task.id)}
+                      className="text-xs text-indigo-500 transition hover:text-indigo-700"
+                    >
+                      Edit
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => deleteTask(task.id)}
