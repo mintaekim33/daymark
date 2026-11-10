@@ -54,6 +54,9 @@ const tasks = [
 
 function DashboardPage() {
   const [dashboardTasks, setDashboardTasks] = useState(tasks);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState("Medium");
+
   const toggleTask = (taskId: number) => {
   setDashboardTasks((currentTasks) =>
     currentTasks.map((task) =>
@@ -62,6 +65,30 @@ function DashboardPage() {
         : task
     )
   );
+};
+
+const addTask = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+
+  const trimmedTitle = newTaskTitle.trim();
+
+  if (!trimmedTitle) return;
+
+  const newTask = {
+    id: Date.now(),
+    title: trimmedTitle,
+    project: "Personal",
+    priority: newTaskPriority,
+    completed: false,
+  };
+
+  setDashboardTasks((currentTasks) => [
+    ...currentTasks,
+    newTask,
+  ]);
+
+  setNewTaskTitle("");
+  setNewTaskPriority("Medium");
 };
   
   return (
