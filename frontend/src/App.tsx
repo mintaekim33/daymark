@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import MainLayout from "./layouts/MainLayout";
@@ -59,7 +59,13 @@ function DashboardPage() {
     );
   };
 
-  const addTask = (event: React.FormEvent<HTMLFormElement>) => {
+  const deleteTask = (taskId: number) => {
+    setDashboardTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId),
+    );
+  };
+
+  const addTask = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const trimmedTitle = newTaskTitle.trim();
@@ -203,9 +209,20 @@ function DashboardPage() {
                   </div>
                 </div>
 
-                <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
-                  {task.priority}
-                </span>
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                    {task.priority}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => deleteTask(task.id)}
+                    aria-label={`Delete ${task.title}`}
+                    className="text-xs text-red-400 transition hover:text-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
