@@ -276,7 +276,15 @@ function DashboardPage() {
                 </div>
 
                 <div className="flex shrink-0 items-center gap-3">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      task.priority === "High"
+                        ? "bg-red-100 text-red-700"
+                        : task.priority === "Medium"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-green-100 text-green-700"
+                    }`}
+                  >
                     {task.priority}
                   </span>
 
