@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import MainLayout from "./layouts/MainLayout";
@@ -21,6 +21,14 @@ const stats = [
     detail: "Due this week",
   },
 ];
+
+interface Task {
+  id: number;
+  title: string;
+  project: string;
+  priority: string;
+  completed: boolean;
+}
 
 const tasks = [
   {
@@ -47,7 +55,14 @@ const tasks = [
 ];
 
 function DashboardPage() {
-  const [dashboardTasks, setDashboardTasks] = useState(tasks);
+  const [dashboardTasks, setDashboardTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem("daymark-tasks");
+
+    return savedTasks ? JSON.parse(savedTasks) : tasks;
+  });
+  useEffect(() => {
+    localStorage.setItem("daymark-tasks", JSON.stringify(dashboardTasks));
+  }, [dashboardTasks]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("Medium");
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -109,7 +124,7 @@ function DashboardPage() {
 
     if (!trimmedTitle) return;
 
-    const newTask = {
+    const newTask: Task = {
       id: Date.now(),
       title: trimmedTitle,
       project: "Personal",
