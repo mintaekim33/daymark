@@ -30,6 +30,23 @@ interface Task {
   completed: boolean;
 }
 
+function isValidTask(value: unknown): value is Task {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "number" &&
+    "title" in value &&
+    typeof value.title === "string" &&
+    "project" in value &&
+    typeof value.project === "string" &&
+    "priority" in value &&
+    typeof value.priority === "string" &&
+    "completed" in value &&
+    typeof value.completed === "boolean"
+  );
+}
+
 const tasks = [
   {
     id: 1,
@@ -65,7 +82,7 @@ function DashboardPage() {
     try {
       const parsedTasks: unknown = JSON.parse(savedTasks);
 
-      if (Array.isArray(parsedTasks)) {
+      if (Array.isArray(parsedTasks) && parsedTasks.every(isValidTask)) {
         return parsedTasks as Task[];
       }
     } catch (error) {
