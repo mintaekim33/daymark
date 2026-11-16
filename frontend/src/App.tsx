@@ -41,7 +41,9 @@ function isValidTask(value: unknown): value is Task {
     "project" in value &&
     typeof value.project === "string" &&
     "priority" in value &&
-    typeof value.priority === "string" &&
+    (value.priority === "High" ||
+      value.priority === "Medium" ||
+      value.priority === "Low") &&
     "completed" in value &&
     typeof value.completed === "boolean"
   );
