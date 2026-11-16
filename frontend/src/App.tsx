@@ -1,4 +1,10 @@
-import { useEffect, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type FormEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import MainLayout from "./layouts/MainLayout";
@@ -73,29 +79,15 @@ const tasks = [
   },
 ];
 
-function DashboardPage() {
-  const [dashboardTasks, setDashboardTasks] = useState<Task[]>(() => {
-    const savedTasks = localStorage.getItem("daymark-tasks");
+interface DashboardPageProps {
+  dashboardTasks: Task[];
+  setDashboardTasks: Dispatch<SetStateAction<Task[]>>;
+}
 
-    if (!savedTasks) {
-      return tasks;
-    }
-
-    try {
-      const parsedTasks: unknown = JSON.parse(savedTasks);
-
-      if (Array.isArray(parsedTasks) && parsedTasks.every(isValidTask)) {
-        return parsedTasks as Task[];
-      }
-    } catch (error) {
-      console.error("Failed to load saved tasks:", error);
-    }
-
-    return tasks;
-  });
-  useEffect(() => {
-    localStorage.setItem("daymark-tasks", JSON.stringify(dashboardTasks));
-  }, [dashboardTasks]);
+function DashboardPage({
+  dashboardTasks,
+  setDashboardTasks,
+}: DashboardPageProps) {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("Medium");
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -417,11 +409,43 @@ function PlaceholderPage({ title }: PlaceholderPageProps) {
 }
 
 function App() {
+  const [dashboardTasks, setDashboardTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem("daymark-tasks");
+
+    if (!savedTasks) {
+      return tasks;
+    }
+
+    try {
+      const parsedTasks: unknown = JSON.parse(savedTasks);
+
+      if (Array.isArray(parsedTasks) && parsedTasks.every(isValidTask)) {
+        return parsedTasks as Task[];
+      }
+    } catch (error) {
+      console.error("Failed to load saved tasks:", error);
+    }
+
+    return tasks;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("daymark-tasks", JSON.stringify(dashboardTasks));
+  }, [dashboardTasks]);
+
   return (
     <BrowserRouter>
       <MainLayout>
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
+          <Route
+            path="/"
+            element={
+              <DashboardPage
+                dashboardTasks={dashboardTasks}
+                setDashboardTasks={setDashboardTasks}
+              />
+            }
+          />
 
           <Route path="/goals" element={<PlaceholderPage title="Goals" />} />
 
