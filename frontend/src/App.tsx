@@ -58,7 +58,21 @@ function DashboardPage() {
   const [dashboardTasks, setDashboardTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem("daymark-tasks");
 
-    return savedTasks ? JSON.parse(savedTasks) : tasks;
+    if (!savedTasks) {
+      return tasks;
+    }
+
+    try {
+      const parsedTasks: unknown = JSON.parse(savedTasks);
+
+      if (Array.isArray(parsedTasks)) {
+        return parsedTasks as Task[];
+      }
+    } catch (error) {
+      console.error("Failed to load saved tasks:", error);
+    }
+
+    return tasks;
   });
   useEffect(() => {
     localStorage.setItem("daymark-tasks", JSON.stringify(dashboardTasks));
