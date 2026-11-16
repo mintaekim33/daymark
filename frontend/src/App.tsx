@@ -1,7 +1,7 @@
 import {
   useEffect,
   useState,
-  type FormEvent,
+  type SubmitEvent,
   type Dispatch,
   type SetStateAction,
 } from "react";
@@ -142,7 +142,7 @@ function DashboardPage({
     setEditingTaskId(null);
   };
 
-  const addTask = (event: FormEvent<HTMLFormElement>) => {
+  const addTask = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const trimmedTitle = newTaskTitle.trim();
