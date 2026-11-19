@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import type { ReactNode } from "react";
 
@@ -14,10 +13,7 @@ function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />

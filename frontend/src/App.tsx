@@ -10,23 +10,23 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 
 // Temporary dashboard data
-const stats = [
-  {
-    label: "Tasks completed",
-    value: "6 / 10",
-    detail: "4 tasks remaining",
-  },
-  {
-    label: "Active projects",
-    value: "4",
-    detail: "Across your workspace",
-  },
-  {
-    label: "Upcoming deadlines",
-    value: "2",
-    detail: "Due this week",
-  },
-];
+// const stats = [
+//   {
+//     label: "Tasks completed",
+//     value: "6 / 10",
+//     detail: "4 tasks remaining",
+//   },
+//   {
+//     label: "Active projects",
+//     value: "4",
+//     detail: "Across your workspace",
+//   },
+//   {
+//     label: "Upcoming deadlines",
+//     value: "2",
+//     detail: "Due this week",
+//   },
+// ];
 
 interface Task {
   id: number;
@@ -88,6 +88,26 @@ function DashboardPage({
   dashboardTasks,
   setDashboardTasks,
 }: DashboardPageProps) {
+  const completedCount = dashboardTasks.filter((task) => task.completed).length;
+  const remainingCount = dashboardTasks.length - completedCount;
+
+  const stats = [
+    {
+      label: "Tasks completed",
+      value: `${completedCount} / ${dashboardTasks.length}`,
+      detail: `${remainingCount} tasks remaining`,
+    },
+    {
+      label: "Active projects",
+      value: "4",
+      detail: "Across your workspace",
+    },
+    {
+      label: "Upcoming deadlines",
+      value: "2",
+      detail: "Due this week",
+    },
+  ];
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("Medium");
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
