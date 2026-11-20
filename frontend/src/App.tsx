@@ -420,7 +420,14 @@ interface PlaceholderPageProps {
   title: string;
 }
 
-function TasksPage({ dashboardTasks }: TasksPageProps) {
+function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
+  const toggleTask = (taskId: number) => {
+    setDashboardTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task,
+      ),
+    );
+  };
   return (
     <div className="space-y-6">
       <div>
@@ -440,6 +447,23 @@ function TasksPage({ dashboardTasks }: TasksPageProps) {
             key={task.id}
             className="border-b border-slate-100 py-4 last:border-0"
           >
+            <button
+              type="button"
+              onClick={() => toggleTask(task.id)}
+              aria-label={
+                task.completed
+                  ? `Mark ${task.title} as incomplete`
+                  : `Mark ${task.title} as complete`
+              }
+              aria-pressed={task.completed}
+              className={`mr-3 h-5 w-5 rounded border ${
+                task.completed
+                  ? "border-green-500 bg-green-500 text-white"
+                  : "border-slate-300 bg-white"
+              }`}
+            >
+              {task.completed ? "✓" : ""}
+            </button>
             <p className="font-medium text-slate-800">{task.title}</p>
 
             <p className="mt-1 text-sm text-slate-500">
