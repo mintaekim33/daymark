@@ -84,6 +84,8 @@ interface DashboardPageProps {
   setDashboardTasks: Dispatch<SetStateAction<Task[]>>;
 }
 
+type TasksPageProps = DashboardPageProps;
+
 function DashboardPage({
   dashboardTasks,
   setDashboardTasks,
@@ -418,6 +420,38 @@ interface PlaceholderPageProps {
   title: string;
 }
 
+function TasksPage({ dashboardTasks }: TasksPageProps) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">My Tasks</h1>
+        <p className="mt-1 text-sm text-slate-500">
+          Manage and keep track of your tasks.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          All Tasks ({dashboardTasks.length})
+        </h2>
+
+        {dashboardTasks.map((task) => (
+          <div
+            key={task.id}
+            className="border-b border-slate-100 py-4 last:border-0"
+          >
+            <p className="font-medium text-slate-800">{task.title}</p>
+
+            <p className="mt-1 text-sm text-slate-500">
+              {task.project} · {task.priority}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function PlaceholderPage({ title }: PlaceholderPageProps) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-8">
@@ -474,8 +508,15 @@ function App() {
             element={<PlaceholderPage title="Projects" />}
           />
 
-          <Route path="/tasks" element={<PlaceholderPage title="My Tasks" />} />
-
+          <Route
+            path="/tasks"
+            element={
+              <TasksPage
+                dashboardTasks={dashboardTasks}
+                setDashboardTasks={setDashboardTasks}
+              />
+            }
+          />
           <Route
             path="/calendar"
             element={<PlaceholderPage title="Calendar" />}
