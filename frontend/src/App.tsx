@@ -430,10 +430,10 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
   };
 
   const deleteTask = (taskId: number) => {
-  setDashboardTasks((currentTasks) =>
-    currentTasks.filter((task) => task.id !== taskId),
-  );
-};
+    setDashboardTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId),
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -472,10 +472,16 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
               {task.completed ? "✓" : ""}
             </button>
             <p className="font-medium text-slate-800">{task.title}</p>
-
             <p className="mt-1 text-sm text-slate-500">
               {task.project} · {task.priority}
-            </p>
+            </p>{" "}
+            <button
+              type="button"
+              onClick={() => deleteTask(task.id)}
+              className="text-sm font-medium text-red-600 hover:text-red-800"
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
