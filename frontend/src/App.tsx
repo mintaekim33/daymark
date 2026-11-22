@@ -421,6 +421,8 @@ interface PlaceholderPageProps {
 }
 
 function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
+  const [taskFilter, setTaskFilter] = useState("All");
+
   const toggleTask = (taskId: number) => {
     setDashboardTasks((currentTasks) =>
       currentTasks.map((task) =>
@@ -440,10 +442,38 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
       currentTasks.filter((task) => task.id !== taskId),
     );
   };
+
+  const filteredTasks = dashboardTasks.filter((task) => {
+    if (taskFilter === "Active") {
+      return !task.completed;
+    }
+
+    if (taskFilter === "Completed") {
+      return task.completed;
+    }
+
+    return true;
+  });
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">My Tasks</h1>
+        <div className="flex gap-2">
+          {["All", "Active", "Completed"].map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              onClick={() => setTaskFilter(filter)}
+              className={`rounded-lg px-4 py-2 text-sm font-medium ${
+                taskFilter === filter
+                  ? "bg-slate-900 text-white"
+                  : "bg-white text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
         <p className="mt-1 text-sm text-slate-500">
           Manage and keep track of your tasks.
         </p>
@@ -454,7 +484,7 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
           All Tasks ({dashboardTasks.length})
         </h2>
 
-        {dashboardTasks.map((task) => (
+        {filteredTasks.map((task) => (
           <div
             key={task.id}
             className="flex items-center justify-between gap-4 border-b border-slate-100 py-4 last:border-0"
