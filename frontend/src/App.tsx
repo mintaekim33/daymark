@@ -430,11 +430,16 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
   };
 
   const deleteTask = (taskId: number) => {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this task?",
+    );
+
+    if (!shouldDelete) return;
+
     setDashboardTasks((currentTasks) =>
       currentTasks.filter((task) => task.id !== taskId),
     );
   };
-
   return (
     <div className="space-y-6">
       <div>
