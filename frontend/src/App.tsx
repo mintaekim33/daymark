@@ -428,6 +428,13 @@ function TasksPage({ dashboardTasks, setDashboardTasks }: TasksPageProps) {
       ),
     );
   };
+
+  const deleteTask = (taskId: number) => {
+  setDashboardTasks((currentTasks) =>
+    currentTasks.filter((task) => task.id !== taskId),
+  );
+};
+
   return (
     <div className="space-y-6">
       <div>
